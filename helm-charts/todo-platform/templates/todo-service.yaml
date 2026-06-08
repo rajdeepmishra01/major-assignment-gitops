@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-service
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicas.todoService }}
+  selector:
+    matchLabels:
+      app: todo-service
+  template:
+    metadata:
+      labels:
+        app: todo-service
+    spec:
+      containers:
+        - name: todo-service
+          image: {{ .Values.images.todoService }}
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5002
+          env:
+            - name: PORT
+              value: "5002"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: DATABASE_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: JWT_SECRET
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: todo-service
+  ports:
+    - port: 5002
+      targetPort: 5002

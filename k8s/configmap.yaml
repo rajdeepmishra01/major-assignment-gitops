@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: todo-platform
+data:
+  AUTH_SERVICE_URL: "http://auth-service:5001"
+  TODO_SERVICE_URL: "http://todo-service:5002"
+  POSTGRES_DB: "todoapp"
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"

@@ -1,0 +1,19 @@
+namespace: todo-platform
+
+images:
+  frontend: frontend:local
+  authService: auth-service:local
+  todoService: todo-service:local
+  postgres: postgres:16-alpine
+
+postgres:
+  database: todoapp
+  user: postgres
+  password: postgres
+
+jwtSecret: change-this-secret-in-production
+
+replicas:
+  frontend: 2
+  authService: 2
+  todoService: 2

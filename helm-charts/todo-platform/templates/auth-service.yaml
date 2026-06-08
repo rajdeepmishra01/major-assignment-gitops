@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicas.authService }}
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: {{ .Values.images.authService }}
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5001
+          env:
+            - name: PORT
+              value: "5001"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: DATABASE_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: JWT_SECRET
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: auth-service
+  ports:
+    - port: 5001
+      targetPort: 5001

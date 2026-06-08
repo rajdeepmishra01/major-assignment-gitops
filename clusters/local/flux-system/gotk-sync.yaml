@@ -1,0 +1,11 @@
+# Replace url with your Git repository URL after pushing this repo.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: todo-platform
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/YOUR_USERNAME/pern-k8s-devops-platform.git
+  ref:
+    branch: main
