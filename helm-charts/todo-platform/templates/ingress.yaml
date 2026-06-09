@@ -4,10 +4,26 @@ metadata:
   name: todo-platform-ingress
   namespace: {{ .Values.namespace }}
 spec:
+  ingressClassName: traefik
   rules:
-    - host: todo.local
-      http:
+    - http:
         paths:
+          - path: /api/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 5001
+
+          - path: /api/todos
+            pathType: Prefix
+            backend:
+              service:
+                name: todo-service
+                port:
+                  number: 5002
+
           - path: /
             pathType: Prefix
             backend:

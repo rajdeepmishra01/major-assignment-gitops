@@ -16,7 +16,7 @@ spec:
       containers:
         - name: auth-service
           image: {{ .Values.images.authService }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 5001
           env:

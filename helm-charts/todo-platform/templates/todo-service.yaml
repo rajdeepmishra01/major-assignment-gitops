@@ -16,7 +16,7 @@ spec:
       containers:
         - name: todo-service
           image: {{ .Values.images.todoService }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 5002
           env:
