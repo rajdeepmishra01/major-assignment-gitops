@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: todo-platform
+  namespace: flux-system
+spec:
+  interval: 1m
+  targetNamespace: todo-platform
+  chart:
+    spec:
+      chart: ./helm-charts/todo-platform
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+      interval: 1m
+  install:
+    createNamespace: true
+  upgrade:
+    remediation:
+      retries: 3
