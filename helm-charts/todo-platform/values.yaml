@@ -50,3 +50,20 @@ resources:
     limits:
       cpu: "500m"
       memory: "512Mi"
+hpa:
+  enabled: true
+
+  frontend:
+    minReplicas: 2
+    maxReplicas: 6
+    cpuUtilization: 50
+
+  authService:
+    minReplicas: 2
+    maxReplicas: 6
+    cpuUtilization: 50
+
+  todoService:
+    minReplicas: 2
+    maxReplicas: 6
+    cpuUtilization: 50
