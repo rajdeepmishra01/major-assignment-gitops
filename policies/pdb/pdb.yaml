@@ -1,0 +1,15 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: todo-platform-pdb
+  namespace: todo-platform
+spec:
+  minAvailable: 1
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - frontend
+          - auth-service
+          - todo-service

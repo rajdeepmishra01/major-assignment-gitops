@@ -1,0 +1,23 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: backend-medium
+value: 1000
+globalDefault: false
+description: "Medium priority for backend services"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: frontend-low
+value: 500
+globalDefault: false
+description: "Low priority for frontend services"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: monitoring-low
+value: 300
+globalDefault: false
+description: "Low priority for monitoring services"
