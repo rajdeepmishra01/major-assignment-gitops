@@ -1,0 +1,13 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: todo-platform
+  namespace: flux-system
+spec:
+  interval: 1m
+  path: ./helm-charts/todo-platform
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: todo-platform
