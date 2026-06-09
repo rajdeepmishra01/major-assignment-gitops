@@ -19,6 +19,8 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 5002
+          resources:
+{{- toYaml .Values.resources.todoService | nindent 12 }}
           env:
             - name: PORT
               value: "5002"

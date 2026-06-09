@@ -28,6 +28,8 @@ spec:
           image: {{ .Values.images.postgres }}
           ports:
             - containerPort: 5432
+          resources:
+{{- toYaml .Values.resources.postgres | nindent 12 }}
           env:
             - name: POSTGRES_DB
               valueFrom:
