@@ -1,4 +1,36 @@
 ---
+# Source: todo-platform/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: todo-platform-network-policy
+  namespace: todo-platform
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 5001
+        - protocol: TCP
+          port: 5002
+
+    - from:
+        - podSelector:
+            matchLabels:
+              app: auth-service
+        - podSelector:
+            matchLabels:
+              app: todo-service
+      ports:
+        - protocol: TCP
+          port: 5432
+---
 # Source: todo-platform/templates/secret.yaml
 apiVersion: v1
 kind: Secret
