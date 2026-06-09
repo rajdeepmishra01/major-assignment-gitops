@@ -5,7 +5,9 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
+  releaseName: todo-platform
   targetNamespace: todo-platform
+
   chart:
     spec:
       chart: ./helm-charts/todo-platform
@@ -14,8 +16,18 @@ spec:
         name: flux-system
         namespace: flux-system
       interval: 1m
+
   install:
     createNamespace: true
+    remediation:
+      retries: 3
+
   upgrade:
     remediation:
       retries: 3
+
+  values:
+    replicas:
+      frontend: 2
+      authService: 2
+      todoService: 2
