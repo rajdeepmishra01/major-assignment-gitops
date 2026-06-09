@@ -28,6 +28,6 @@ spec:
 
   values:
     replicas:
-      frontend: 2
-      authService: 2
-      todoService: 2
+      frontend: 3
+      authService: 3
+      todoService: 3
