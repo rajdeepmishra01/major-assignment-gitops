@@ -1,9 +1,9 @@
 namespace: todo-platform
 
 images:
-  frontend: frontend:local
-  authService: auth-service:local
-  todoService: todo-service:local
+  frontend: ghcr.io/rajdeepmishra01/frontend:latest
+  authService: ghcr.io/rajdeepmishra01/auth-service:latest
+  todoService: ghcr.io/rajdeepmishra01/todo-service:latest
   postgres: postgres:16-alpine
 
 postgres:
