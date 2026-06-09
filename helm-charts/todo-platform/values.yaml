@@ -11,7 +11,7 @@ postgres:
   user: postgres
   password: postgres
 
-jwtSecret: change-this-secret-in-production
+jwtSecret: secretkey
 
 replicas:
   frontend: 2
