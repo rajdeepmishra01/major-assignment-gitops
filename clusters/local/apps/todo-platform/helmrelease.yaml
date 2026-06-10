@@ -7,7 +7,6 @@ spec:
   interval: 1m
   releaseName: todo-platform
   targetNamespace: todo-platform
-
   chart:
     spec:
       chart: ./helm-charts/todo-platform
@@ -16,22 +15,18 @@ spec:
         name: flux-system
         namespace: flux-system
       interval: 1m
-
   install:
     createNamespace: true
     remediation:
       retries: 3
-
   upgrade:
     remediation:
       retries: 3
-
   values:
     images:
       frontend: ghcr.io/rajdeepmishra01/frontend:8 # {"$imagepolicy": "flux-system:frontend"}
-      authService: ghcr.io/rajdeepmishra01/auth-service:8 # {"$imagepolicy": "flux-system:auth-service"}
+      authService: ghcr.io/rajdeepmishra01/auth-service:10 # {"$imagepolicy": "flux-system:auth-service"}
       todoService: ghcr.io/rajdeepmishra01/todo-service:8 # {"$imagepolicy": "flux-system:todo-service"}
-
     replicas:
       frontend: 3
       authService: 3
