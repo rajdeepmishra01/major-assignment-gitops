@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup-cronjob
+  namespace: todo-platform
+spec:
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: postgres-backup
+              image: busybox:1.36
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "Backup started at $(date)"
+                  echo "Simulating PostgreSQL database backup..."
+                  sleep 10
+                  echo "Backup completed at $(date)"
