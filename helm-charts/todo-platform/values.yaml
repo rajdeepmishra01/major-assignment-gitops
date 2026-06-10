@@ -1,8 +1,8 @@
 namespace: todo-platform
 images:
-  frontend: ghcr.io/rajdeepmishra01/frontend:4 # {"$imagepolicy": "flux-system:frontend"}
-  authService: ghcr.io/rajdeepmishra01/auth-service:4 # {"$imagepolicy": "flux-system:auth-service"}
-  todoService: ghcr.io/rajdeepmishra01/todo-service:4 # {"$imagepolicy": "flux-system:todo-service"}
+  frontend: ghcr.io/rajdeepmishra01/frontend:7 # {"$imagepolicy": "flux-system:frontend"}
+  authService: ghcr.io/rajdeepmishra01/auth-service:7 # {"$imagepolicy": "flux-system:auth-service"}
+  todoService: ghcr.io/rajdeepmishra01/todo-service:7 # {"$imagepolicy": "flux-system:todo-service"}
   postgres: postgres:16-alpine
 postgres:
   database: todoapp
