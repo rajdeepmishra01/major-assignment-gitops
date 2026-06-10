@@ -8,3 +8,4 @@ resources:
   - frontend-image-policy.yaml
   - auth-service-image-policy.yaml
   - todo-service-image-policy.yaml
+  - image-update-automation.yaml
