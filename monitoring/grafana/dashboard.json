@@ -1,4 +1,25 @@
 {
   "title": "Todo Platform Dashboard",
-  "panels": []
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Todo Platform Monitoring",
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "count(kube_pod_info{namespace=\"todo-platform\"})",
+          "legendFormat": "Pods"
+        }
+      ]
+    }
+  ]
 }
