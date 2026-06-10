@@ -1,23 +1,187 @@
 {
-  "title": "Todo Platform Dashboard",
+  "title": "Todo Platform - DevOps Monitoring Dashboard",
+  "uid": "todo-platform-monitoring",
   "timezone": "browser",
   "schemaVersion": 39,
   "version": 1,
   "refresh": "10s",
+  "tags": ["todo-platform", "kubernetes", "prometheus", "grafana", "devops-assignment"],
+  "templating": {
+    "list": [
+      {
+        "name": "namespace",
+        "type": "constant",
+        "query": "todo-platform",
+        "current": {
+          "text": "todo-platform",
+          "value": "todo-platform"
+        }
+      }
+    ]
+  },
   "panels": [
     {
       "type": "stat",
-      "title": "Todo Platform Monitoring",
-      "gridPos": {
-        "h": 4,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
+      "title": "Running Pods",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
       "targets": [
         {
-          "expr": "count(kube_pod_info{namespace=\"todo-platform\"})",
-          "legendFormat": "Pods"
+          "expr": "count(kube_pod_status_phase{namespace=\"$namespace\", phase=\"Running\"})",
+          "legendFormat": "Running Pods"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Pod Restarts",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"$namespace\"})",
+          "legendFormat": "Restarts"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Auth Requests",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(auth_service_http_requests_total)",
+          "legendFormat": "Auth Requests"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Todo Requests",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(todo_service_http_requests_total)",
+          "legendFormat": "Todo Requests"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Application Requests/sec",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "expr": "sum(rate(auth_service_http_requests_total[1m]))",
+          "legendFormat": "auth-service"
+        },
+        {
+          "expr": "sum(rate(todo_service_http_requests_total[1m]))",
+          "legendFormat": "todo-service"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Pod CPU Usage",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container!=\"\", image!=\"\"}[5m])) by (pod)",
+          "legendFormat": "{{pod}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Pod Memory Usage",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", container!=\"\", image!=\"\"}) by (pod)",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU Usage vs Requests",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container!=\"\", image!=\"\"}[5m])) by (pod)",
+          "legendFormat": "usage - {{pod}}"
+        },
+        {
+          "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", resource=\"cpu\"}) by (pod)",
+          "legendFormat": "request - {{pod}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Usage vs Limits",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", container!=\"\", image!=\"\"}) by (pod)",
+          "legendFormat": "usage - {{pod}}"
+        },
+        {
+          "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", resource=\"memory\"}) by (pod)",
+          "legendFormat": "limit - {{pod}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "HPA Current Replicas",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "targets": [
+        {
+          "expr": "kube_horizontalpodautoscaler_status_current_replicas{namespace=\"$namespace\"}",
+          "legendFormat": "{{horizontalpodautoscaler}}"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Deployment Replica Status",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+      "targets": [
+        {
+          "expr": "kube_deployment_status_replicas_available{namespace=\"$namespace\"}",
+          "legendFormat": "{{deployment}}"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Loki Backend Up",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 28 },
+      "targets": [
+        {
+          "expr": "up{namespace=\"logging\"}",
+          "legendFormat": "{{pod}}"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Postgres Pod Running",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 28 },
+      "targets": [
+        {
+          "expr": "count(kube_pod_status_phase{namespace=\"$namespace\", pod=~\"postgres.*\", phase=\"Running\"})",
+          "legendFormat": "postgres"
         }
       ]
     }
