@@ -1,0 +1,9 @@
+apiVersion: platform.todo.com/v1
+kind: Backup
+metadata:
+  name: todo-db-backup
+  namespace: todo-platform
+spec:
+  database: postgres
+  schedule: "*/5 * * * *"
+  retentionDays: 7
