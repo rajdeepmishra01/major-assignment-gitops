@@ -20,5 +20,5 @@ spec:
     push:
       branch: main
   update:
-    path: ./helm-charts/todo-platform
+    path: ./clusters/local/apps/todo-platform
     strategy: Setters
