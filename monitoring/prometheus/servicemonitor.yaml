@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: todo-platform-services
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - todo-platform
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - auth-service
+          - todo-service
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
