@@ -1,23 +1,18 @@
 namespace: todo-platform
-
 images:
-  frontend: ghcr.io/rajdeepmishra01/frontend:latest # {"$imagepolicy": "flux-system:frontend"}
-  authService: ghcr.io/rajdeepmishra01/auth-service:latest # {"$imagepolicy": "flux-system:auth-service"}
-  todoService: ghcr.io/rajdeepmishra01/todo-service:latest # {"$imagepolicy": "flux-system:todo-service"}
+  frontend: ghcr.io/rajdeepmishra01/frontend:4 # {"$imagepolicy": "flux-system:frontend"}
+  authService: ghcr.io/rajdeepmishra01/auth-service:4 # {"$imagepolicy": "flux-system:auth-service"}
+  todoService: ghcr.io/rajdeepmishra01/todo-service:4 # {"$imagepolicy": "flux-system:todo-service"}
   postgres: postgres:16-alpine
-
 postgres:
   database: todoapp
   user: postgres
   password: postgres
-
 jwtSecret: secretkey
-
 replicas:
   frontend: 2
   authService: 2
   todoService: 2
-
 resources:
   frontend:
     requests:
@@ -26,7 +21,6 @@ resources:
     limits:
       cpu: "500m"
       memory: "512Mi"
-
   authService:
     requests:
       cpu: "100m"
@@ -34,7 +28,6 @@ resources:
     limits:
       cpu: "500m"
       memory: "512Mi"
-
   todoService:
     requests:
       cpu: "100m"
@@ -42,7 +35,6 @@ resources:
     limits:
       cpu: "500m"
       memory: "512Mi"
-
   postgres:
     requests:
       cpu: "100m"
@@ -52,17 +44,14 @@ resources:
       memory: "512Mi"
 hpa:
   enabled: true
-
   frontend:
     minReplicas: 2
     maxReplicas: 6
     cpuUtilization: 50
-
   authService:
     minReplicas: 2
     maxReplicas: 6
     cpuUtilization: 50
-
   todoService:
     minReplicas: 2
     maxReplicas: 6
