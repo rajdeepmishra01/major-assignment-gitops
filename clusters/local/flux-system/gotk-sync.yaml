@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/rajdeepmishra01/major-assignment-gitops
+  url: https://github.com/rajdeepmishra01/major-assignment-gitops
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
