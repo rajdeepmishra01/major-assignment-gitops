@@ -1,0 +1,8 @@
+promtail:
+  enabled: false
+
+grafana:
+  enabled: false
+
+loki:
+  enabled: true
