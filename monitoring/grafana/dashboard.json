@@ -1,11 +1,11 @@
 {
-  "title": "Todo Platform - DevOps Monitoring Dashboard",
-  "uid": "todo-platform-monitoring",
+  "title": "Todo Platform - Full Monitoring Dashboard",
+  "uid": "todo-platform-full-monitoring",
   "timezone": "browser",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "refresh": "10s",
-  "tags": ["todo-platform", "kubernetes", "prometheus", "grafana", "devops-assignment"],
+  "tags": ["todo-platform", "kubernetes", "prometheus", "grafana", "loki", "gitops"],
   "templating": {
     "list": [
       {
@@ -24,65 +24,57 @@
       "type": "stat",
       "title": "Running Pods",
       "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
-      "targets": [
-        {
-          "expr": "count(kube_pod_status_phase{namespace=\"$namespace\", phase=\"Running\"})",
-          "legendFormat": "Running Pods"
-        }
-      ]
+      "targets": [{ "expr": "count(kube_pod_status_phase{namespace=\"$namespace\", phase=\"Running\"})" }]
     },
     {
       "type": "stat",
-      "title": "Pod Restarts",
+      "title": "Total Pod Restarts",
       "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
-      "targets": [
-        {
-          "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"$namespace\"})",
-          "legendFormat": "Restarts"
-        }
-      ]
+      "targets": [{ "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"$namespace\"})" }]
     },
     {
       "type": "stat",
       "title": "Auth Requests",
       "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
-      "targets": [
-        {
-          "expr": "sum(auth_service_http_requests_total)",
-          "legendFormat": "Auth Requests"
-        }
-      ]
+      "targets": [{ "expr": "sum(auth_service_http_requests_total)" }]
     },
     {
       "type": "stat",
       "title": "Todo Requests",
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
-      "targets": [
-        {
-          "expr": "sum(todo_service_http_requests_total)",
-          "legendFormat": "Todo Requests"
-        }
-      ]
+      "targets": [{ "expr": "sum(todo_service_http_requests_total)" }]
     },
     {
       "type": "timeseries",
       "title": "Application Requests/sec",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
       "targets": [
-        {
-          "expr": "sum(rate(auth_service_http_requests_total[1m]))",
-          "legendFormat": "auth-service"
-        },
-        {
-          "expr": "sum(rate(todo_service_http_requests_total[1m]))",
-          "legendFormat": "todo-service"
-        }
+        { "expr": "sum(rate(auth_service_http_requests_total[1m]))", "legendFormat": "auth-service" },
+        { "expr": "sum(rate(todo_service_http_requests_total[1m]))", "legendFormat": "todo-service" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "API Error Rate - 5xx",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "targets": [
+        { "expr": "sum(rate(auth_service_http_requests_total{status_code=~\"5..\"}[5m]))", "legendFormat": "auth 5xx" },
+        { "expr": "sum(rate(todo_service_http_requests_total{status_code=~\"5..\"}[5m]))", "legendFormat": "todo 5xx" }
+      ]
+    },
+    {
+      "type": "barchart",
+      "title": "HTTP Status Codes",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [
+        { "expr": "sum by (status_code) (auth_service_http_requests_total)", "legendFormat": "auth {{status_code}}" },
+        { "expr": "sum by (status_code) (todo_service_http_requests_total)", "legendFormat": "todo {{status_code}}" }
       ]
     },
     {
       "type": "timeseries",
       "title": "Pod CPU Usage",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
       "targets": [
         {
           "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container!=\"\", image!=\"\"}[5m])) by (pod)",
@@ -93,69 +85,65 @@
     {
       "type": "timeseries",
       "title": "Pod Memory Usage",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
       "targets": [
         {
           "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", container!=\"\", image!=\"\"}) by (pod)",
           "legendFormat": "{{pod}}"
         }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes"
-        }
-      }
+      ]
     },
     {
       "type": "timeseries",
       "title": "CPU Usage vs Requests",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
       "targets": [
         {
           "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container!=\"\", image!=\"\"}[5m])) by (pod)",
-          "legendFormat": "usage - {{pod}}"
+          "legendFormat": "usage {{pod}}"
         },
         {
           "expr": "sum(kube_pod_container_resource_requests{namespace=\"$namespace\", resource=\"cpu\"}) by (pod)",
-          "legendFormat": "request - {{pod}}"
+          "legendFormat": "request {{pod}}"
         }
       ]
     },
     {
       "type": "timeseries",
       "title": "Memory Usage vs Limits",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
       "targets": [
         {
           "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\", container!=\"\", image!=\"\"}) by (pod)",
-          "legendFormat": "usage - {{pod}}"
+          "legendFormat": "usage {{pod}}"
         },
         {
           "expr": "sum(kube_pod_container_resource_limits{namespace=\"$namespace\", resource=\"memory\"}) by (pod)",
-          "legendFormat": "limit - {{pod}}"
+          "legendFormat": "limit {{pod}}"
         }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes"
-        }
-      }
+      ]
     },
     {
       "type": "timeseries",
-      "title": "HPA Current Replicas",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "title": "HPA Current vs Desired Replicas",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
       "targets": [
         {
           "expr": "kube_horizontalpodautoscaler_status_current_replicas{namespace=\"$namespace\"}",
-          "legendFormat": "{{horizontalpodautoscaler}}"
+          "legendFormat": "current {{horizontalpodautoscaler}}"
+        },
+        {
+          "expr": "kube_horizontalpodautoscaler_status_desired_replicas{namespace=\"$namespace\"}",
+          "legendFormat": "desired {{horizontalpodautoscaler}}"
         }
       ]
     },
     {
       "type": "table",
-      "title": "Deployment Replica Status",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+      "title": "Deployment Available Replicas",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 36 },
       "targets": [
         {
           "expr": "kube_deployment_status_replicas_available{namespace=\"$namespace\"}",
@@ -164,24 +152,34 @@
       ]
     },
     {
-      "type": "stat",
-      "title": "Loki Backend Up",
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 28 },
+      "type": "timeseries",
+      "title": "Container Restarts by Pod",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 36 },
       "targets": [
         {
-          "expr": "up{namespace=\"logging\"}",
+          "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"$namespace\"}) by (pod)",
           "legendFormat": "{{pod}}"
         }
       ]
     },
     {
       "type": "stat",
-      "title": "Postgres Pod Running",
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 28 },
+      "title": "Postgres Running",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 44 },
       "targets": [
         {
-          "expr": "count(kube_pod_status_phase{namespace=\"$namespace\", pod=~\"postgres.*\", phase=\"Running\"})",
-          "legendFormat": "postgres"
+          "expr": "count(kube_pod_status_phase{namespace=\"$namespace\", pod=~\"postgres.*\", phase=\"Running\"})"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Loki Backend Status",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 44 },
+      "targets": [
+        {
+          "expr": "up{namespace=\"logging\"}",
+          "legendFormat": "{{pod}}"
         }
       ]
     }
