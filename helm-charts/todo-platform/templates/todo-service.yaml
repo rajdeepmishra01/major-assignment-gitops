@@ -40,6 +40,8 @@ kind: Service
 metadata:
   name: todo-service
   namespace: {{ .Values.namespace }}
+  labels:
+    app: auth-service
 spec:
   selector:
     app: todo-service
