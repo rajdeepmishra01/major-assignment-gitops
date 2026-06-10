@@ -7,7 +7,7 @@ spec:
   imageRepositoryRef:
     name: frontend
   filterTags:
-    pattern: '^[a-f0-9]{40}$'
+    pattern: '^[0-9]+$'
   policy:
-    alphabetical:
-      order: desc
+    numerical:
+      order: asc
