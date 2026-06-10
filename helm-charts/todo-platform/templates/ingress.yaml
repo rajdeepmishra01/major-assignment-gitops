@@ -5,8 +5,13 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - todo.local
+      secretName: todo-platform-tls
   rules:
-    - http:
+    - host: todo.local
+      http:
         paths:
           - path: /api/auth
             pathType: Prefix
