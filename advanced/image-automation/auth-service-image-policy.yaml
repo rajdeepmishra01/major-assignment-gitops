@@ -6,6 +6,8 @@ metadata:
 spec:
   imageRepositoryRef:
     name: auth-service
+  filterTags:
+    pattern: '^[a-f0-9]{40}$'
   policy:
     alphabetical:
-      order: asc
+      order: desc
