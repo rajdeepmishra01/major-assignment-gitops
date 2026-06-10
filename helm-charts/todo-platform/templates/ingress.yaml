@@ -8,6 +8,7 @@ spec:
   tls:
     - hosts:
         - todo.local
+        - localhost
       secretName: todo-platform-tls
   rules:
     - host: todo.local
@@ -20,7 +21,6 @@ spec:
                 name: auth-service
                 port:
                   number: 5001
-
           - path: /api/todos
             pathType: Prefix
             backend:
@@ -28,7 +28,31 @@ spec:
                 name: todo-service
                 port:
                   number: 5002
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
 
+    - host: localhost
+      http:
+        paths:
+          - path: /api/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 5001
+          - path: /api/todos
+            pathType: Prefix
+            backend:
+              service:
+                name: todo-service
+                port:
+                  number: 5002
           - path: /
             pathType: Prefix
             backend:
