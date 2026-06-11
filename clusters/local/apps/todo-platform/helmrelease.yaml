@@ -24,7 +24,7 @@ spec:
       retries: 3
   values:
     images:
-      frontend: ghcr.io/rajdeepmishra01/frontend:10 # {"$imagepolicy": "flux-system:frontend"}
+      frontend: ghcr.io/rajdeepmishra01/frontend:11 # {"$imagepolicy": "flux-system:frontend"}
       authService: ghcr.io/rajdeepmishra01/auth-service:10 # {"$imagepolicy": "flux-system:auth-service"}
       todoService: ghcr.io/rajdeepmishra01/todo-service:10 # {"$imagepolicy": "flux-system:todo-service"}
     replicas:
