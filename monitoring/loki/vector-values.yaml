@@ -1,0 +1,33 @@
+role: Agent
+
+service:
+  enabled: false
+
+customConfig:
+  data_dir: /vector-data-dir
+
+  sources:
+    kubernetes_logs:
+      type: kubernetes_logs
+      extra_label_selector: "app in (frontend,auth-service,todo-service,postgres)"
+
+  transforms:
+    todo_platform_only:
+      type: filter
+      inputs:
+        - kubernetes_logs
+      condition: '.kubernetes.pod_namespace == "todo-platform"'
+
+  sinks:
+    loki:
+      type: loki
+      inputs:
+        - todo_platform_only
+      endpoint: http://loki.logging.svc.cluster.local:3100
+      encoding:
+        codec: json
+      labels:
+        namespace: '{{ "{{" }} kubernetes.pod_namespace {{ "}}" }}'
+        pod: '{{ "{{" }} kubernetes.pod_name {{ "}}" }}'
+        container: '{{ "{{" }} kubernetes.container_name {{ "}}" }}'
+        app: '{{ "{{" }} kubernetes.pod_labels.app {{ "}}" }}'
