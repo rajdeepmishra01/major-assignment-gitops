@@ -1,0 +1,66 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: todo-platform-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: todo-platform.rules
+
+      rules:
+
+        - alert: FrontendDown
+          expr: up{namespace="todo-platform"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Service is down"
+            description: "{{ $labels.pod }} is not responding"
+
+        - alert: HighCPUUsage
+          expr: rate(container_cpu_usage_seconds_total{namespace="todo-platform"}[5m]) > 0.8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU Usage"
+            description: "Container {{ $labels.container }} CPU usage is high"
+
+        - alert: HighMemoryUsage
+          expr: container_memory_working_set_bytes{namespace="todo-platform"} > 500000000
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High Memory Usage"
+            description: "Container {{ $labels.container }} memory usage is high"
+
+        - alert: PodRestartingFrequently
+          expr: increase(kube_pod_container_status_restarts_total{namespace="todo-platform"}[15m]) > 3
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Frequent Pod Restarts"
+            description: "{{ $labels.pod }} restarted multiple times"
+
+        - alert: PostgresDown
+          expr: up{namespace="todo-platform",pod=~"postgres.*"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Postgres Down"
+            description: "Database pod is unavailable"
+
+        - alert: HPAAtMaximumReplicas
+          expr: kube_horizontalpodautoscaler_status_current_replicas{namespace="todo-platform"} >= kube_horizontalpodautoscaler_spec_max_replicas{namespace="todo-platform"}
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "HPA reached maximum replicas"
+            description: "{{ $labels.horizontalpodautoscaler }} has reached max replicas"
