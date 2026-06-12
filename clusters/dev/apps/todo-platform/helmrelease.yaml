@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: todo-platform-dev
+  namespace: flux-system
+spec:
+  interval: 1m
+  targetNamespace: todo-platform-dev
+  install:
+    createNamespace: true
+  chart:
+    spec:
+      chart: ./helm-charts/todo-platform
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+  values:
+    namespace: todo-platform-dev
+    replicas:
+      frontend: 1
+      authService: 1
+      todoService: 1
+    ingress:
+      host: dev.todo.local
+    resources:
+      frontend:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
+      authService:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
+      todoService:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
