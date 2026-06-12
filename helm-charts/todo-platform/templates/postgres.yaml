@@ -23,6 +23,7 @@ spec:
       labels:
         app: postgres
     spec:
+      priorityClassName: backend-medium
       containers:
         - name: postgres
           image: {{ .Values.images.postgres }}

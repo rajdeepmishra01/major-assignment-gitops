@@ -13,6 +13,7 @@ spec:
       labels:
         app: todo-service
     spec:
+      priorityClassName: backend-medium
       containers:
         - name: todo-service
           image: {{ .Values.images.todoService }}

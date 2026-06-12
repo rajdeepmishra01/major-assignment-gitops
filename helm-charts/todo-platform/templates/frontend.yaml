@@ -13,6 +13,7 @@ spec:
       labels:
         app: frontend
     spec:
+      priorityClassName: frontend-low
       containers:
         - name: frontend
           image: {{ .Values.images.frontend }}

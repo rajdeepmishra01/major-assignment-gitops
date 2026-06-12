@@ -13,6 +13,7 @@ spec:
       labels:
         app: auth-service
     spec:
+      priorityClassName: backend-medium
       containers:
         - name: auth-service
           image: {{ .Values.images.authService }}

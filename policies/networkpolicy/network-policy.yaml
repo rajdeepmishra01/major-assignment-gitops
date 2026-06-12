@@ -8,6 +8,23 @@ spec:
   policyTypes:
     - Ingress
   ingress:
+    # Allow Traefik ingress controller to reach frontend/auth/todo
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 5001
+        - protocol: TCP
+          port: 5002
+
+    # Allow frontend to call auth-service and todo-service
     - from:
         - podSelector:
             matchLabels:
@@ -18,6 +35,7 @@ spec:
         - protocol: TCP
           port: 5002
 
+    # Allow auth-service, todo-service, and backup cronjob pods to reach postgres
     - from:
         - podSelector:
             matchLabels:
@@ -25,6 +43,21 @@ spec:
         - podSelector:
             matchLabels:
               app: todo-service
+        - podSelector:
+            matchExpressions:
+              - key: job-name
+                operator: Exists
       ports:
         - protocol: TCP
           port: 5432
+
+    # Allow Prometheus to scrape metrics
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 5001
+        - protocol: TCP
+          port: 5002
