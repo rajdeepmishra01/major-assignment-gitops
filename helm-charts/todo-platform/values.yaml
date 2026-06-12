@@ -1,6 +1,4 @@
 namespace: todo-platform
-secret:
-  create: false
 images:
   frontend: ghcr.io/rajdeepmishra01/frontend:latest
   authService: ghcr.io/rajdeepmishra01/auth-service:latest
