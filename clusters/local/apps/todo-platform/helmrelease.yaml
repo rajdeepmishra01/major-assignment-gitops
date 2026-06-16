@@ -25,7 +25,7 @@ spec:
   values:
     images:
       frontend: ghcr.io/rajdeepmishra01/frontend:37 # {"$imagepolicy": "flux-system:frontend"}
-      authService: ghcr.io/rajdeepmishra01/auth-service:34 # {"$imagepolicy": "flux-system:auth-service"}
+      authService: ghcr.io/rajdeepmishra01/auth-service:37 # {"$imagepolicy": "flux-system:auth-service"}
       todoService: ghcr.io/rajdeepmishra01/todo-service:37 # {"$imagepolicy": "flux-system:todo-service"}
     replicas:
       frontend: 3
